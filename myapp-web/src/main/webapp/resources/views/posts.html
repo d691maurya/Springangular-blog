@@ -1,0 +1,5 @@
+<div class="post" ng-repeat="post in posts">
+	<h3><a ng-href="#/app/posts/view/{{post.id}}">{{post.title}}</a></h3>
+	<p>{{post.body}}</p>
+	<span class="remove_post" ng-click="deletePost(post.id)">X</span>
+</div>

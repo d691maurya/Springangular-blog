@@ -1,0 +1,16 @@
+<div id="page">
+	<div>
+		<h1>New</h1>
+		<div>
+			<form ng-submit="savePost()">
+				<div>
+					<input type="text" ng-model="post.title" placeholder="post title" required="required">
+				</div>
+				<div>
+					<textarea ng-model="post.body" placeholder="post body" rows="20" required="required"></textarea>
+				</div>
+				<input type="submit">
+			</form>
+		</div>
+	</div>
+</div>

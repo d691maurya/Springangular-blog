@@ -1,0 +1,31 @@
+<div class="post_detail">
+	<div class="banner">
+		<a class="remove_post" ng-href="#/app/posts/edit/{{post.id}}">&lt;/&gt;</a>
+		<div class="title">
+			<h3>
+				{{post.title}}
+				<span>views: #{{post.views}}</span>
+				<span ng-click="showComments()">comments: #{{post.comments.length}}</span>
+			</h3>
+		</div>
+	</div>
+	<div class="body">
+		<pre>{{post.body}}</pre>
+		<div id="comments" class="comments" ng-if="post.id" ng-controller="CommentsController">
+			<div class="comment">
+				<form ng-submit="saveComment()">
+					<textarea rows="2" ng-model="comment.body" required></textarea>
+					<div class="button">
+						<input type="submit">
+					</div>
+				</form>
+			</div>
+			<h3>Comments({{post.comments.length}})</h3>
+			<div class="comment" ng-repeat="comment in post.comments">
+				<pre>{{comment.body}}</pre>
+				<div class="post-ts" am-time-ago="(comment.createdAt/1000)" am-preprocess="unix"></div>
+				<span class="remove" ng-click="deleteComment(comment.id)">x</span>
+			</div>
+		</div>
+	</div>
+</div>
