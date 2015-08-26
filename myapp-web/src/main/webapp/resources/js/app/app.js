@@ -6,7 +6,7 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 
 .config(function($httpProvider){
 	
-	$httpProvider.interceptors.push(function() {
+	$httpProvider.interceptors.push(function($rootScope) {
 		return {
 			'request': function(config) {
 				config.headers['x-auth-token'] = token;
@@ -15,7 +15,7 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 			
 			'response': function(response){
 				if (response.status === 401) {
-					window.location = '#/app/login';
+					$rootScope.$broadcast('loginRequired');
 				} else if (response.status === 200) {
 					if(response.headers("x-auth-token"))
 						token = response.headers("x-auth-token");
@@ -24,7 +24,7 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 			},
 			'responseError': function(response){
 				if (response.status === 401) {
-					window.location = '#/app/login';
+					$rootScope.$broadcast('loginRequired');
 				}
 				return response;
 			}
@@ -102,8 +102,29 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
     $urlRouterProvider.otherwise('/app/posts');
 })
 
-.controller('AppCtrl', function($http){
+.controller('AppCtrl', function($http, $rootScope, $scope, $state){
 	
+	$scope.modalShown = false;
+	
+	$scope.toggleModal = function() {
+	    $scope.modalShown = !$scope.modalShown;
+	};
+	
+	$scope.$on('loginRequired', function(){
+		$scope.modalShown = true;
+	});
+	
+	$scope.user = {};
+	
+	$scope.doLogin = function(){
+		$http.post(baseUrl + 'login', $scope.user).success(function(res){
+			if(!res.error){
+				$scope.modalShown = false;
+				$rootScope.$broadcast('loggedIn');
+				//$state.go("app.posts");
+			}
+		});
+	};
 })
 
 .controller('LoginCtrl', function($scope, $http, $state){
@@ -132,6 +153,10 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 	
 	$scope.getPosts();
 	
+	$scope.$on('loggedIn', function(){
+		$scope.getPosts();
+	});
+		
 	$scope.deletePost = function(postId){
 		$http.delete(baseUrl + 'posts/' + postId).success(function(res){
 			if(!res.error){
@@ -169,13 +194,21 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 		
 	};
 	
-	if($stateParams.id && $stateParams.id != ''){
-		$http.get(baseUrl + 'posts/' + $stateParams.id + '.json').success(function(res){
-			if(!res.error){
-				$scope.post = res.post;
-			}
-		});
+	$scope.getPost = function(){
+		if($stateParams.id && $stateParams.id != ''){
+			$http.get(baseUrl + 'posts/' + $stateParams.id + '.json').success(function(res){
+				if(!res.error){
+					$scope.post = res.post;
+				}
+			});
+		}
 	}
+	
+	$scope.getPost();
+	
+	$scope.$on('loggedIn', function(){
+		$scope.getPost();
+	});
 })
 
 .controller('CommentsController', function($scope, $http){
@@ -217,5 +250,55 @@ angular.module('myapp', ['ui.router', 'angularMoment'])
 	};
 	
 	getComments();
+	
+	$scope.$on('loggedIn', function(){
+		getComments();
+	});
 		
+})
+
+.directive('modalDialog', function() {
+	return {
+		restrict: 'E',
+		scope: {
+			show: '='
+		},
+		replace: true, // Replace with the template below
+		transclude: true, // we want to insert custom content inside the directive
+		link: function(scope, element, attrs) {
+			scope.dialogStyle = {};
+			if (attrs.width)
+				scope.dialogStyle.width = attrs.width;
+			if (attrs.height)
+				scope.dialogStyle.height = attrs.height;
+
+			scope.hideModal = function() {
+				scope.show = false;
+			};
+		},
+		template: "<div class='ng-modal' ng-show='show'> \
+					<div class='ng-modal-overlay'></div> \
+					<div class='ng-modal-dialog' ng-style='dialogStyle'> \
+					<div class='ng-modal-dialog-content' ng-transclude></div> \
+					</div></div>"
+	};
+})
+
+.directive('starRating', function() {
+	  return {
+		restrict: 'AE',
+		replace: true,
+		template: '<div />',
+		link: function(scope, elem, attrs) {
+			scope.className = "star";
+			
+			elem.append();
+			
+			elem.bind('mouseover', function() {
+				scope.$apply(function() {
+					scope.className = "star_full";
+			    });
+		  	});
+		}
+	  };
 });

@@ -3,10 +3,13 @@ package com.myapp.dao.impl;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +33,7 @@ public class PostDaoImpl implements PostDao {
 		criteria.setProjection(Projections.projectionList()
 				.add(Projections.property("entPostAlias.id").as("id"))
 				.add(Projections.property("entPostAlias.title").as("title"))
-				.add(Projections.property("entPostAlias.body").as("body"))
+				.add(Projections.sqlProjection("substr(body, 0, 500) as body", new String[] {"body"}, new Type[] { StandardBasicTypes.STRING }))
 				.add(Projections.property("entPostAlias.views").as("views"))
 				.add(Projections.property("postCreatedBy.id").as("createdBy"))
 				.add(Projections.property("postCreatedBy.username").as("username"))

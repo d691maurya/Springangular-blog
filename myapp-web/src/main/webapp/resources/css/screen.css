@@ -295,5 +295,62 @@ input[type='submit']:hover{
 	width:200px;
 	margin:50px auto 20px;
 	padding:20px 10px;
-	border:1px solid #ccc;
+}
+span.star, span.star_full{
+	display:inline-block !important;
+	margin:0!important;
+	padding:0!important;
+}
+span.star:after{
+	content:"-";
+	padding:2px 5px;
+	margin:0 2px;
+}
+span.star_full:after{
+	content:"!";
+	padding:2px 5px;
+	margin:0 2px;
+}
+
+.ng-modal-overlay {
+	 /* A dark translucent div that covers the whole screen */
+	 position:absolute;
+	 z-index:9999;
+	 top:0;
+	 left:0;
+	 width:100%;
+	 height:100%;
+	 background-color:#000000;
+	 opacity: 0.4;
+}
+.ng-modal-dialog {
+	 /* A centered div above the overlay with a box shadow. */
+	 z-index:10000;
+	 position: absolute;
+	 width: 50%; /* Default */
+	
+	 /* Center the dialog */
+	 top: 50%;
+	 left: 50%;
+	 transform: translate(-50%, -50%);
+	 -webkit-transform: translate(-50%, -50%);
+	 -moz-transform: translate(-50%, -50%);
+	
+	 background-color: #fff;
+	 box-shadow: 4px 4px 80px #000;
+}
+.ng-modal-dialog-content {
+	 padding:10px;
+	 text-align: left;
+}
+.ng-modal-close {
+	 position: absolute;
+	 top: 3px;
+	 right: 5px;
+	 padding: 5px;
+	 cursor: pointer;
+	 font-size: 120%;
+	 display: inline-block;
+	 font-weight: bold;
+	 font-family: 'arial', 'sans-serif';
 }

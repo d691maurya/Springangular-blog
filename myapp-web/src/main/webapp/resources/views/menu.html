@@ -4,4 +4,14 @@
 		<a href="#/app/posts/" class="add_new">@</a>
 	</h1>
 	<div ui-view="pageContent"></div>
+	<modal-dialog show='modalShown' width='350px' height='350px'>
+  		<div class="login_form">
+  			<h2 style="text-align:center;">Login to continue</h2>
+			<form ng-submit="doLogin()">
+				<input type="text" ng-model="user.username" placeholder="username">
+				<input type="password" ng-model="user.password" placeholder="password">
+				<input type="submit" value="login >">
+			</form>
+		</div>
+	</modal-dialog>
 </div>

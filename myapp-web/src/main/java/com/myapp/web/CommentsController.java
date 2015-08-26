@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.myapp.common.Mail;
 import com.myapp.dto.Comment;
 import com.myapp.dto.User;
 import com.myapp.service.CommentService;
@@ -23,6 +24,9 @@ public class CommentsController {
 
 	@Autowired
 	CommentService commentServiceImpl;
+	
+	@Autowired
+	Mail mail;
 	
 	@RequestMapping(value="/posts/{postId}/comments", method= RequestMethod.GET)
     public ModelMap listPosts(@PathVariable(value="postId") Integer postId) {
@@ -52,6 +56,7 @@ public class CommentsController {
 				Integer newCommentId = commentServiceImpl.createComment(comment);
 				Comment newComment = commentServiceImpl.getComment(newCommentId);
 				map.addAttribute("comment", newComment);
+				//mail.sendMail("info@xyz.com", "d691maurya@gmail.com", "test", "test");
 			} else {
 				map.addAttribute("error", true);
 			}
